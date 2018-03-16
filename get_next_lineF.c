@@ -6,7 +6,7 @@
 /*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 08:14:14 by matranch          #+#    #+#             */
-/*   Updated: 2018/03/14 17:44:28 by matranch         ###   ########.fr       */
+/*   Updated: 2018/03/16 19:59:23 by matranch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,62 +14,37 @@
 
 int		get_next_line(const int fd, char **line)
 {
-	char 		*past;
-	char		buf[BUFF_SIZE + 1000000];
+	char		buf[BUFF_SIZE + 1];
+	static char *past;
 	char 		*line_r;
-	static int 	i;
-	int 		j;
+	char		*tmp;
+	int 		i;
 
-	if(fd < 0)
-		return (-1);
-	if(i)
-		j = i;
-	else
-		j = 0;
+	if(!(*line))
+		*line = malloc(sizeof(*line));
 	while ((read(fd, buf, BUFF_SIZE)))
 	{
-		line_r = ft_strchr(buf, '\n');
-		if (line_r)
+		past = ft_strdup(buf);
+		line_r = ft_strchr(past, '\n');
+		if(line_r)
 		{
-			while(buf[i])
-			{
-				if(buf[i] == '\n')
-					break;
-				i++;
-			}
-			i++;
-			past = ft_strnew((size_t)i - (size_t)j);
-			ft_strccpy(past, buf, (size_t)j, (size_t)i);
+			i = line_r - past;
+			tmp = ft_strnew(i);
+			tmp = ft_strncpy(tmp, past, (size_t)i);
+			*line = ft_strjoin(*line, tmp);
 		}
+		else
+			*line = ft_strjoin(*line, past);
 	}
-	*line = past;
 	printf("%s", *line);
 	return (1);
 }
 
-char	*ft_strccpy(char *dest, const char *src, size_t n, size_t n2)
-{
-	int i;
-
-	i = 0;
-	while(n < n2)
-	{
-		dest[i] = src[n];
-		i++;
-		n++;
-	}
-	return(dest);
-}
-
-/*int main(int ac, char **av)
+int main(int ac, char **av)
 {
 	char *line;
 	int i = 0;
-	if(ac > 1)
-		return (0);
-	while(i < 2)
-	{
-		get_next_line(open(av[1], O_RDONLY), &line);
-		i++;
-	}
-}*/
+	get_next_line(open(av[1], O_RDONLY), &line);
+	//while((get_next_line(open(av[1], O_RDONLY), &line) == 0)){}
+	return (0);
+}
