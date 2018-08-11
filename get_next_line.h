@@ -6,7 +6,7 @@
 /*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 16:29:39 by matranch          #+#    #+#             */
-/*   Updated: 2018/08/06 16:57:01 by matranch         ###   ########.fr       */
+/*   Updated: 2018/08/11 20:10:16 by matranch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 # include "libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdio.h>
 # include <fcntl.h>
 # include <string.h>
 
-# define BUFF_SIZE 5
+# define BUFF_SIZE 20
 
 static struct 		liste
 {
@@ -33,7 +34,7 @@ void		get_rest(const int fd, char buffer[128], char str[128], struct liste *list
 void		get_line(char buffer[128], char str[128], struct liste *liste, char **line);
 char	*ft_strccpy(char *dest, const char *src, size_t n, size_t n2);
 char	*ft_strcchr(const char *src, int c);
-int		ft_check(char *str, char **line);
-char	*get_read(const int fd, char **line);
-void	increment_read(const int fd, char *str);
+int		ft_check(char *str, char **line, int j);
+int		get_read(const int fd, char **line);
+void	ft_split_line(char *str, char **line);
 #endif

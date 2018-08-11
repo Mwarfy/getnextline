@@ -1,111 +1,65 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line2.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/08 08:14:14 by matranch          #+#    #+#             */
-/*   Updated: 2018/04/18 14:20:56 by matranch         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
 int		get_next_line(const int fd, char **line)
 {
-	char			buf[BUFF_SIZE + 1];
-	char static		*rest;
-	char			*tmp;
-	char			*tmp2;
-	int				ret;
+	static char *rest;
+	char buf[BUFF_SIZE + 1];
+	char *str;
+	int ret;
 
-	if(!*line)
+	str = ft_strnew(0);
+	if(rest)
+		str = ft_strdup(rest);
+	while((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		rest = malloc(sizeof(1));
-		*line = malloc(sizeof(1));
-		tmp = malloc(sizeof(1));
+		str = ft_strjoin(str, ft_strdup(buf));
+		if((rest = ft_strchr(ft_strdup(buf), '\n'))) 
+			break;
 	}
-	tmp = ft_strdup(rest);
-	//printf("TMP : %s", tmp);
-	if((rest = ft_check(tmp)))
-	{
-	//	printf("REST : %s", rest);
-		tmp2 = ft_strnew((int)ft_strlen(tmp) - (int)ft_strlen(rest) - 1);
-		*line = ft_strncpy(tmp2, tmp, (int)ft_strlen(tmp) - (int)ft_strlen(rest) - 1);
-		return (1);
-	}
-	else
-	{
-	/*	if(ft_strlen(tmp) > 0)
-		{
-			*line = tmp;
-			return (1);
-		}*/
-		printf("TEST");
-		while ((ret = read(fd, buf, BUFF_SIZE)))
-		{
-			if((rest = ft_strchr(ft_strdup(buf), '\n')))
-			{
-			//	printf("REST NUMERO 1 : %s", rest);
-				tmp2 = ft_strnew((int)ft_strlen(buf) - (int)ft_strlen(rest) - 1);
-				*line = ft_strjoin(*line, ft_strncpy(tmp2, buf, (int)ft_strlen(buf) - (int)ft_strlen(rest) - 1));
-				return (1);
-			}
-			else
-				*line = ft_strjoin(*line, ft_strdup(buf));
-		/*i += ret;
-		if(i > k)
-		{
-			if((rest = ft_strchr(ft_strdup(buf), '\n')))
-			{
-				k = i;
-				tmp = ft_strnew((int)ft_strlen(buf) - (int)ft_strlen(rest) - 1);
-				ft_strncpy(tmp, buf, (int)ft_strlen(buf) - (int)ft_strlen(rest) - 1);
-				*line = ft_strjoin(*line, tmp);
-				return (1);
-			}
-			else
-				*line = ft_strjoin(*line, ft_strdup(buf));
-		}*/
-		}
-		
-	}
-	return (0);
+	ft_split_line(str, line);
+	return (ret);
 }
 
-char*	ft_check(char *rest)
+void	ft_split_line(char *str, char **line)
 {
-	char *tmp;
+	int i;
+	char *str2;
 
-	tmp = rest;
-	if(ft_strlen(tmp) > 0)
+	str2 = ft_strnew(0);
+	i = -1;
+	while(str[++i])
 	{
-	//	printf("CHECK TMP BEFORE %s", tmp);
-		tmp = ft_strchr(rest, '\n');
-	//	printf("CHECK TMP AFTER %s", tmp);
-		if(ft_strlen(tmp) > 0)
-			return (tmp);
+		if(str[i] == '\n')
+		{
+			str2[i] = 0;
+			break;
+		}
+		str2[i] = str[i];
 	}
-	return (0);
+	*line = str2;
 }
 
-int main(int ac, char **av)
+int 	main(int ac, char **av)
 {
 	char *line;
-	int i;
+	int ret;
+	int fd;
+	int count;
 
-	/*get_next_line(open(av[1], O_RDONLY), &line);
-	printf("%s\n", line);
-	get_next_line(open(av[1], O_RDONLY), &line);
-	printf("%s\n", line);
-	get_next_line(open(av[1], O_RDONLY), &line);
-	printf("%s\n", line);
-	get_next_line(open(av[1], O_RDONLY), &line);
-	printf("%s\n", line);*/
-	while((i = get_next_line(open(av[1], O_RDONLY), &line)) != 0 ){
-		printf("%s\n", line);
-		printf("%d\n", i);
+	fd = open("test", O_RDONLY);
+	if(fd > 2)
+	{
+		count = 0;
+		line = NULL;
+		while((ret = get_next_line(fd, &line)) > 0)
+		{
+			count++;
+			printf("%s", line);
+			if (count > 50)
+				break;
+		}
+		close(fd);
+		printf("\n%d\n", count);
 	}
 	return (0);
 }
