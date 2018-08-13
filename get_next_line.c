@@ -12,6 +12,7 @@ int		get_next_line(const int fd, char **line)
 		str = ft_strdup(rest);
 	while((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
+		buf[BUFF_SIZE] = 0;
 		str = ft_strjoin(str, ft_strdup(buf));
 		if((rest = ft_strchr(ft_strdup(buf), '\n'))) 
 			break;
@@ -39,7 +40,7 @@ void	ft_split_line(char *str, char **line)
 	*line = str2;
 }
 
-int 	main(int ac, char **av)
+/*int 	main(int ac, char **av)
 {
 	char *line;
 	int ret;
@@ -62,4 +63,4 @@ int 	main(int ac, char **av)
 		printf("\n%d\n", count);
 	}
 	return (0);
-}
+}*/
