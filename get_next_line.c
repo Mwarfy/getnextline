@@ -7,6 +7,8 @@ int		get_next_line(const int fd, char **line)
 	char *str;
 	int ret;
 
+	if(!line)
+		return (-1);
 	str = ft_strnew(0);
 	if(rest)
 		str = ft_strdup(rest);
@@ -14,7 +16,7 @@ int		get_next_line(const int fd, char **line)
 	{
 		buf[BUFF_SIZE] = 0;
 		str = ft_strjoin(str, ft_strdup(buf));
-		if((rest = ft_strchr(ft_strdup(buf), '\n'))) 
+		if((rest = ft_strchr(ft_strdup(buf), '\n')))
 			break;
 	}
 	ft_split_line(str, line);

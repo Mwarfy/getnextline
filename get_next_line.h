@@ -6,7 +6,7 @@
 /*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 16:29:39 by matranch          #+#    #+#             */
-/*   Updated: 2018/08/11 20:10:16 by matranch         ###   ########.fr       */
+/*   Updated: 2018/08/14 05:32:15 by matranch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <fcntl.h>
 # include <string.h>
 
-# define BUFF_SIZE 20
+# define BUFF_SIZE 2
 
 static struct 		liste
 {
