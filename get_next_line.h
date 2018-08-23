@@ -6,7 +6,7 @@
 /*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 16:29:39 by matranch          #+#    #+#             */
-/*   Updated: 2018/08/14 05:32:15 by matranch         ###   ########.fr       */
+/*   Updated: 2018/08/23 19:33:58 by matranch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void		get_rest(const int fd, char buffer[128], char str[128], struct liste *list
 void		get_line(char buffer[128], char str[128], struct liste *liste, char **line);
 char	*ft_strccpy(char *dest, const char *src, size_t n, size_t n2);
 char	*ft_strcchr(const char *src, int c);
-int		ft_check(char *str, char **line, int j);
+int		ft_check(char *str, char **line);
 int		get_read(const int fd, char **line);
 void	ft_split_line(char *str, char **line);
 #endif
