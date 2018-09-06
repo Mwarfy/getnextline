@@ -1,109 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/06 18:25:31 by matranch          #+#    #+#             */
+/*   Updated: 2018/09/06 18:41:51 by matranch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 int		get_next_line(const int fd, char **line)
 {
-	static char *rest;
-	char buf[BUFF_SIZE + 1];
-	char *str;
-	int ret;
-	
+	static char		*rest;
+	char			*str;
+	int				ret;
+
 	ret = 0;
-	if(!line)
+	if (!line || fd < 0)
 		return (-1);
-	ft_memdel((void**)line);
+	*line = NULL;
 	str = ft_strnew(0);
-	if(rest)
+	if (rest)
 	{
 		str = ft_strdup(rest);
-		ft_memdel((void**)rest);
-		if(ft_check(str, line) > 0)
+		if (ft_check(str, line))
 		{
 			rest = ft_strchr(str, '\n');
 			ret++;
 		}
 	}
-	if(ret == 0)
-	{
-		while((ret = read(fd, buf, BUFF_SIZE)) > 0)
-		{
-			buf[ret] = 0;
-			str = ft_strjoin(str, ft_strdup(buf));
-			if((rest = ft_strchr(ft_strdup(buf), '\n')))
-				break;
-		}
-		ft_split_line(str, line);
-	}
-	if(ret == 0 && (ft_strlen(*line) > 0))
+	if (ret == 0)
+		ret = ft_read(fd, str, &rest, line);
+	if (ret == 0 && (ft_strlen(*line) > 0))
 		return (1);
-	return (ret);
+	if (ret < 0)
+		return (-1);
+	return (ret > 0 ? 1 : 0);
 }
 
-void	ft_split_line(char *str, char **line)
+int		ft_read(const int fd, char *str, char **rest, char **line)
 {
-	int i;
-	int j;
-	char *str2;
+	int		ret;
+	char	buf[BUFF_SIZE + 1];
 
-	str2 = ft_strnew(0);
-	j = 0;
-	i = -1;
-	while(str[++i])
+	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		if(str[i] == '\n')
-		{
-			str2[i] = 0;
-			j++;
-			break;
-		}
-		str2[i] = str[i];
+		buf[ret] = 0;
+		str = ft_strjoin(str, ft_strdup(buf));
+		if ((*rest = ft_strchr(ft_strdup(buf), '\n')))
+			break ;
 	}
-	*line = str2;
+	ft_check(str, line);
+	return (ret);
 }
 
 int		ft_check(char *str, char **line)
 {
-	int i;
-	int ret;
-	char *str1;
+	int		i;
+	int		ret;
+	char	*str1;
 
-	str1 = ft_strnew(0);
 	ret = 0;
+	str1 = ft_strnew(0);
 	i = -1;
-	while(str[++i])
+	while (str[++i])
 	{
-		if(str[i] == '\n')
+		if (str[i] == '\n')
 		{
-			str1[i] = 0;
 			ret = 1;
-			break;
-		}	
+			break ;
+		}
 		str1[i] = str[i];
 	}
+	str1[i] = 0;
 	*line = str1;
-	return(ret);
+	return (ret);
 }
-
-/*int 	main(void)
+int 	main(void)
 {
 	char *line;
-	int ret;
-	int fd;
-	int count;
+	int out;
+	int p[2];
+	char *str;
+	int len = 50;
 
-	fd = open("test", O_RDONLY);
-	if(fd > 2)
-	{
-		count = 0;
-		line = NULL;
-		while((ret = get_next_line(fd, &line)) > 0)
-		{
-			count++;
-			printf("%s", line);
-			if (count > 50)
-				break;
-		}
-		close(fd);
-		printf("\n%d\n", count);
-	}
+	str = (char *)malloc(1000 * 1000);
+	*str = '\0';
+	while(len--)
+		strcat(str, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in leo dignissim, gravida leo id, imperdiet urna. Aliquam magna nunc, maximus quis eleifend et, scelerisque non dolor. Suspendisse augue augue, tempus");
+	out = dup(1);
+	pipe(p);
+	dup2(p[1], 1);
+
+	if (str)
+		write(1, str, strlen(str));
+	close(p[1]);
+	dup2(out, 1);
+	get_next_line(p[0], &line);
+	printf("%s", line);
 	return (0);
-}*/
+}

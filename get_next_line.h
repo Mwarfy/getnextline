@@ -6,7 +6,7 @@
 /*   By: matranch <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 16:29:39 by matranch          #+#    #+#             */
-/*   Updated: 2018/08/23 19:33:58 by matranch         ###   ########.fr       */
+/*   Updated: 2018/09/06 18:37:12 by matranch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,14 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <string.h>
+# include <strings.h>
+# include <string.h>
+# include <regex.h>
+# include <assert.h>
 
-# define BUFF_SIZE 2
-
-static struct 		liste
-{
-	char 					*str;
-	int						index;
-	struct liste			*next;
-}							liste;
+# define BUFF_SIZE 5
 
 int		get_next_line(const int fd, char **line);
-void		get_rest(const int fd, char buffer[128], char str[128], struct liste *liste);
-void		get_line(char buffer[128], char str[128], struct liste *liste, char **line);
-char	*ft_strccpy(char *dest, const char *src, size_t n, size_t n2);
-char	*ft_strcchr(const char *src, int c);
 int		ft_check(char *str, char **line);
-int		get_read(const int fd, char **line);
-void	ft_split_line(char *str, char **line);
+int		ft_read(const int fd, char *str, char **rest, char **line);
 #endif
