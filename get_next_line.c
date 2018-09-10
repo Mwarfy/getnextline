@@ -14,26 +14,26 @@
 
 int		get_next_line(const int fd, char **line)
 {
-	static char		*rest;
+	static char		*rest[255];
 	char			*str;
-	int				ret;
-
-	ret = 0;
+	int			ret;
+	
 	if (!line || fd < 0)
 		return (-1);
+	ret = 0;
 	*line = NULL;
 	str = ft_strnew(0);
-	if (rest)
+	if (rest[fd])
 	{
-		str = ft_strdup(rest);
+		str = ft_strdup(rest[fd]);
 		if (ft_check(str, line))
 		{
-			rest = ft_strchr(str, '\n');
+			rest[fd] = ft_strchr(rest[fd], '\n');
 			ret++;
 		}
 	}
 	if (ret == 0)
-		ret = ft_read(fd, str, &rest, line);
+		ret = ft_read(fd, str, &rest[fd], line);
 	if (ret == 0 && (ft_strlen(*line) > 0))
 		return (1);
 	if (ret < 0)
@@ -49,7 +49,7 @@ int		ft_read(const int fd, char *str, char **rest, char **line)
 	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = 0;
-		str = ft_strjoin(str, ft_strdup(buf));
+		str = ft_strjoin(str, buf);
 		if ((*rest = ft_strchr(ft_strdup(buf), '\n')))
 			break ;
 	}
@@ -71,21 +71,24 @@ int		ft_check(char *str, char **line)
 		if (str[i] == '\n')
 		{
 			ret = 1;
-			break ;
+			break;
 		}
-		str1[i] = str[i];
+		str1[i] = str[i];			
 	}
 	str1[i] = 0;
 	*line = str1;
 	return (ret);
 }
-int 	main(void)
+
+/*int 	main(void)
 {
 	char *line;
 	int out;
 	int p[2];
 	char *str;
 	int len = 50;
+	int fd;
+	int i;
 
 	str = (char *)malloc(1000 * 1000);
 	*str = '\0';
@@ -100,6 +103,14 @@ int 	main(void)
 	close(p[1]);
 	dup2(out, 1);
 	get_next_line(p[0], &line);
-	printf("%s", line);
+	close(p[0]);
+	fd = open("test", O_WRONLY);
+	write(fd, str, strlen(str));
+	close(fd);
+	fd = open("test1", O_WRONLY);
+	write(fd, line, ft_strlen(line));
+	close(fd);
+	i = strcmp(line, str);
+	printf("%d", i);
 	return (0);
-}
+}*/
